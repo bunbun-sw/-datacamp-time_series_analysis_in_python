@@ -1,37 +1,31 @@
-## Welcome to GitHub Pages
+## Course Notes
 
-You can use the [editor on GitHub](https://github.com/bunbun-sw/time_series_analysis_in_python/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+The notes are taken from [time series analysis in Python on DataCamp](https://campus.datacamp.com/courses/time-series-analysis-in-python/correlation-and-autocorrelation?ex=1).
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Use pandas to calculate correlations of two time series 
+1. calcualate percent changes of both series: `df_changes = df.pct_change()`
+2. calculate correlation: `cor = df[col_1].corr(df[col_2])`
+Rather than using the values over time, calculate the changes over time for each time series by `df_changes = df.pct_change()`. Then use `corr` to calcualate the correlation. Because the two series can be totally unrelated, but the calculated correlations over the values can be high. 
 
-### Markdown
+### statsmodel to apply linear regression model
+1. add constant column ones to a dataframe for the regression intercept, otherwise statsmodel will fit it without intercept. `df_with_const=sm.add_constant(df)`
+2. run regression `results=sm.OLS(df[dependent_col],df_with_const).fit()`
+3. correlation and R-Squared: 
+- sign(correlation) = sign(regression slope)
+- [corr]^2 = R^2
+- R-squared measures how closely the data fit the regression line, so the R-squared in a simple regression is related to the correlation between the two variables. In particular, the magnitude of the correlation is the square root of the R-squared and the sign of the correlation is the sign of the regression coefficient.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+### Autocorrelation
+- Correlation of a time series with lagged copy of itself
+1. Interpretation of autocorrelation
+- mean reversion
 
-```markdown
-Syntax highlighted code block
+Following large jumps, up or down, the stock price tends to reverse. Mathmatically, it is called negative correlation. 
+- trend following: positive correlation
+2. Calculation Steps
+- convert data into an interval like weekly or monthly using `resample()`
+- compute percentage changes
+- calculate autocorrelation using `autocorr()`
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/bunbun-sw/time_series_analysis_in_python/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+3. Confidence Interval of ACF
+- Two horizontal dotted line or blue region around 0 is the CI of ACF. If a spike falls out of the region, that means the autocorrelation is significantly different from zero. 
